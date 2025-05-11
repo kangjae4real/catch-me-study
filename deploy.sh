@@ -9,4 +9,4 @@ git pull origin master # Pulling code
 docker compose up -d
 ./gradlew clean # Clean-up existing build result
 ./gradlew build # Build project
-java -jar ./build/libs/catch-me-study-0.0.1-SNAPSHOT.jar
+java -jar ./build/libs/catch-me-study-0.0.1-SNAPSHOT.jar # Run Spring Application
