@@ -21,6 +21,6 @@ public class UserDto extends BaseDto {
     private String email;
 
     @NotBlank
-    @Length(max = 100, message = "")
+    @Length(max = 100)
     private String name;
 }
