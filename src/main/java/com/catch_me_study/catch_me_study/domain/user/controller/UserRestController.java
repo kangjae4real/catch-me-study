@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class UserRestController {
     @GetMapping
     @Tag(name = "User")
     @Operation(summary = "User 조회", description = "모든 회원을 조회합니다.")
-    public List<UserDto> getAllUser(Boolean withDeleted) {
+    public List<UserDto> getAllUser(Optional<Boolean> withDeleted) {
         return userService.getAllUser(withDeleted);
     }
 

@@ -28,8 +28,9 @@ public class UserService {
         return userMapper.toDto(userEntity);
     }
 
-    public List<UserDto> getAllUser(Boolean withDeleted) {
-        List<UserEntity> userEntityList = withDeleted ? userRepository.findAll() : userRepository.findByIsDeletedFalse();
+    public List<UserDto> getAllUser(Optional<Boolean> withDeleted) {
+        Boolean withDeletedValue = withDeleted.orElse(false);
+        List<UserEntity> userEntityList = withDeletedValue ? userRepository.findAll() : userRepository.findByIsDeletedFalse();
         return userMapper.toDto(userEntityList);
     }
 
