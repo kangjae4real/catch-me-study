@@ -1,7 +1,8 @@
 package com.catch_me_study.catch_me_study.domain.user.service;
 
-import com.catch_me_study.catch_me_study.domain.user.dto.CreateUserDto;
-import com.catch_me_study.catch_me_study.domain.user.dto.UserDto;
+import com.catch_me_study.catch_me_study.domain.user.dto.UserCreateDto;
+import com.catch_me_study.catch_me_study.domain.user.dto.UserEditDto;
+import com.catch_me_study.catch_me_study.domain.user.dto.UserResponseDto;
 import com.catch_me_study.catch_me_study.domain.user.entity.UserEntity;
 import com.catch_me_study.catch_me_study.domain.user.mapper.UserMapper;
 import com.catch_me_study.catch_me_study.domain.user.repository.UserRepository;
@@ -19,39 +20,45 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDto createUser(CreateUserDto userDto) {
-        UserEntity userEntity = userMapper.toEntity(userDto);
+    public UserResponseDto createUser(UserCreateDto userCreateDto) {
+        UserEntity userEntity = userMapper.toEntity(userCreateDto);
 
-        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userEntity.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
 
         userRepository.save(userEntity);
-        return userMapper.toDto(userEntity);
+        return userMapper.toResponseDto(userEntity);
     }
 
-    public List<UserDto> getAllUser(Optional<Boolean> withDeleted) {
+    public List<UserResponseDto> getAllUser(Optional<Boolean> withDeleted) {
         Boolean withDeletedValue = withDeleted.orElse(false);
-        List<UserEntity> userEntityList = withDeletedValue ? userRepository.findAll() : userRepository.findByIsDeletedFalse();
-        return userMapper.toDto(userEntityList);
+        List<UserEntity> userEntityList = withDeletedValue ?
+                userRepository.findAll() :
+                userRepository.findByIsDeletedFalse();
+
+        return userMapper.toResponseDto(userEntityList);
     }
 
     private UserEntity findById(String id) {
         Optional<UserEntity> userEntity = userRepository.findByIdAndIsDeletedFalse(id);
-        userEntity.orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
-
-        return userEntity.get();
+        return userEntity.orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
     }
 
-    public UserDto getUserById(String id) {
-        return userMapper.toDto(findById(id));
+    public UserResponseDto getUserById(String id) {
+        return userMapper.toResponseDto(findById(id));
     }
 
-    public UserDto updateUser(UserDto userDto) {
-        UserEntity userEntity = findById(userDto.getId());
-        userEntity.update(userEntity.getEmail(), userEntity.getPassword());
+    public UserResponseDto updateUser(UserEditDto userRequestDto) {
+        if (userRequestDto.getId() == null || userRequestDto.getId().isEmpty()) {
+            throw new IllegalArgumentException("사용자 ID는 필수입니다.");
+        }
+
+        UserEntity userEntity = findById(userRequestDto.getId());
+
+        userEntity.update(userRequestDto.getEmail(), userRequestDto.getName());
 
         userRepository.save(userEntity);
 
-        return userMapper.toDto(userEntity);
+        return userMapper.toResponseDto(userEntity);
     }
 
     public String deleteUserById(String id) {

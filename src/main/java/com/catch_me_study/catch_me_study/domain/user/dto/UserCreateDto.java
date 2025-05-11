@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
         confirmPassword = "confirmPassword",
         message = "비밀번호와 비밀번호 확인이 일치하지 않습니다."
 )
-public class CreateUserDto extends UserDto {
+public class UserCreateDto extends UserRequestDto {
     @NotBlank
     @Length(max = 120)
     private String password;

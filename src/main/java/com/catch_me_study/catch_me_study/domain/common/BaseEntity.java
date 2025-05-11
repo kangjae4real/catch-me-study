@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
@@ -20,14 +21,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@EnableJpaAuditing
 public class BaseEntity {
 
     @CreatedDate
-    @Column(name="CREATE_DATE_TIME", updatable = false)
+    @Column(name = "CREATE_DATE_TIME", nullable = false, updatable = false)
     private LocalDateTime createDateTime;
 
     @LastModifiedDate
-    @Column(name="MODIFY_DATE_TIME")
+    @Column(name = "MODIFY_DATE_TIME")
     private LocalDateTime modifyDateTime;
 
 }
