@@ -1,10 +1,12 @@
 package com.catch_me_study.catch_me_study.domain.user.service;
 
+import com.catch_me_study.catch_me_study.domain.user.dto.CreateUserDto;
 import com.catch_me_study.catch_me_study.domain.user.dto.UserDto;
 import com.catch_me_study.catch_me_study.domain.user.entity.UserEntity;
 import com.catch_me_study.catch_me_study.domain.user.mapper.UserMapper;
 import com.catch_me_study.catch_me_study.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +17,13 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDto createUser(UserDto userDto) {
+    public UserDto createUser(CreateUserDto userDto) {
         UserEntity userEntity = userMapper.toEntity(userDto);
+
+        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         userRepository.save(userEntity);
         return userMapper.toDto(userEntity);
     }
